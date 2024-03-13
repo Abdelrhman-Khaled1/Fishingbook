@@ -7,8 +7,12 @@ import com.example.security.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -46,4 +50,19 @@ public class AuthenticationService {
                 .token(jwtToken)
                 .build();
     }
+
+    public Optional<UserDetails> getCurrentUser(){
+        UserDetails principal = (UserDetails)
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return Optional.of(principal);
+    }
+//    public Optional<org.springframework.security.core.userdetails.User> getCurrentUser() {
+//        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        return Optional.of((org.springframework.security.core.userdetails.User) principal);
+//    }
+//    public String getCurrentUser() {
+//        return jwtService.extractUsername();
+//    }
+
+
 }
