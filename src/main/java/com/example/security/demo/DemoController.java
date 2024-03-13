@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class DemoController {
 
     @GetMapping
-    public ResponseEntity<String> sayHello(){
-        return ResponseEntity.ok("Hello from secured endpoint");
+    public ResponseEntity<MessageModel> sayHello(){
+        return ResponseEntity.ok(new MessageModel("hello from secured endpoint"));
     }
 }
