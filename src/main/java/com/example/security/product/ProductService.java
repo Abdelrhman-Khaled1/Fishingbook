@@ -25,9 +25,9 @@ public class ProductService {
 //        product.setContent(productDto.getContent());
 //        User currentUser = authenticationService.getCurrentUser().orElseThrow(()->new IllegalArgumentException("No user logged in"));
 //        product.setUsername(currentUser.getUsername());
-//        product.setCreatedOn(Instant.now());
 
         Product product = mapFromDtoToProduct(productDto);
+        product.setCreatedOn(Instant.now());
 
         productRepository.save(product);
     }
@@ -56,9 +56,26 @@ public class ProductService {
         product.setTitle(productDto.getTitle());
         product.setContent(productDto.getContent());
         UserDetails loggedInUser = authenticationService.getCurrentUser().orElseThrow(() -> new IllegalArgumentException("User Not Found"));
-        product.setCreatedOn(Instant.now());
         product.setUsername(loggedInUser.getUsername());
         product.setUpdatedOn(Instant.now());
         return product;
     }
+
+    public void updateProduct(Long id ,ProductDto productDto){
+
+        UserDetails loggedInUser = authenticationService.getCurrentUser().orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+
+        Product product = productRepository.findById(id).get();
+        if(product.getUsername().equals(loggedInUser.getUsername())){
+            product.setTitle(productDto.getTitle());
+            product.setContent(productDto.getContent());
+            product.setUpdatedOn(Instant.now());
+
+            productRepository.save(product);
+        }else {
+            throw new IllegalArgumentException("User Mismatch");
+        }
+
+    }
+
 }

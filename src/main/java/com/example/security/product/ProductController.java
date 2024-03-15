@@ -29,6 +29,11 @@ public class ProductController {
     public ResponseEntity<ProductDto> getSingleProduct(@PathVariable @RequestBody Long id){
         return new ResponseEntity<>(productService.readSingleProduct(id),HttpStatus.OK);
     }
+    @PostMapping("/update/{id}")
+    public ResponseEntity updateProduct(@PathVariable Long id,@RequestBody ProductDto productDto){
+        productService.updateProduct(id,productDto);
+        return new ResponseEntity(HttpStatus.OK);
+    }
 
 }
 
