@@ -10,5 +10,4 @@ public class ProductDto {
     private Long id;
     private String content;
     private String title;
-    private String username;
 }

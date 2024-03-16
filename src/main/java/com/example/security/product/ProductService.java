@@ -1,13 +1,15 @@
 package com.example.security.product;
 
 import com.example.security.auth.AuthenticationService;
+import com.example.security.user.User;
+import com.example.security.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,14 +21,20 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    public void createProduct(ProductDto productDto){
-//        Product product = new Product();
-//        product.setTitle(product.getTitle());
-//        product.setContent(productDto.getContent());
-//        User currentUser = authenticationService.getCurrentUser().orElseThrow(()->new IllegalArgumentException("No user logged in"));
-//        product.setUsername(currentUser.getUsername());
+    @Autowired
+    private UserRepository userRepository;
 
-        Product product = mapFromDtoToProduct(productDto);
+    public void createProduct(ProductDto productDto){
+        Product product = new Product();
+
+        product.setTitle(productDto.getTitle());
+        product.setContent(productDto.getContent());
+        UserDetails loggedInUser = authenticationService.getCurrentUser().orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+
+        Optional<User> user = userRepository.findByEmail(loggedInUser.getUsername());
+        product.setUser(user.get());
+
+//        Product product = mapFromDtoToProduct(productDto);
         product.setCreatedOn(Instant.now());
 
         productRepository.save(product);
@@ -47,7 +55,6 @@ public class ProductService {
         productDto.setId(product.getId());
         productDto.setTitle(product.getTitle());
         productDto.setContent(product.getContent());
-        productDto.setUsername(product.getUsername());
         return productDto;
     }
 
@@ -55,8 +62,6 @@ public class ProductService {
         Product product = new Product();
         product.setTitle(productDto.getTitle());
         product.setContent(productDto.getContent());
-        UserDetails loggedInUser = authenticationService.getCurrentUser().orElseThrow(() -> new IllegalArgumentException("User Not Found"));
-        product.setUsername(loggedInUser.getUsername());
         product.setUpdatedOn(Instant.now());
         return product;
     }
@@ -66,7 +71,7 @@ public class ProductService {
         UserDetails loggedInUser = authenticationService.getCurrentUser().orElseThrow(() -> new IllegalArgumentException("User Not Found"));
 
         Product product = productRepository.findById(id).get();
-        if(product.getUsername().equals(loggedInUser.getUsername())){
+        if(product.getUser().getEmail().equals(loggedInUser.getUsername())){
             product.setTitle(productDto.getTitle());
             product.setContent(productDto.getContent());
             product.setUpdatedOn(Instant.now());
@@ -76,6 +81,11 @@ public class ProductService {
             throw new IllegalArgumentException("User Mismatch");
         }
 
+    }
+
+    public List<ProductDto> getProductByUserId(Long id){
+        List<Product> productsByUserId = productRepository.findByUserId(id);
+        return productsByUserId.stream().map(this::mapFromProductToDto).collect(Collectors.toList());
     }
 
 }

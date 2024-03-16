@@ -1,5 +1,7 @@
 package com.example.security.product;
 
+import com.example.security.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -27,8 +29,10 @@ public class Product {
     private String content;
     private Instant createdOn;
     private Instant updatedOn;
-    @NotBlank
-    private String username;
+
+    @ManyToOne
+    @JsonIgnore
+    private User user;
 
 
 }

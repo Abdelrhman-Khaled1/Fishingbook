@@ -20,7 +20,7 @@ public class ProductController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<List<ProductDto>> showAllProducts(){
         return new ResponseEntity<>(productService.showAllProducts(),HttpStatus.OK);
     }
@@ -34,6 +34,13 @@ public class ProductController {
         productService.updateProduct(id,productDto);
         return new ResponseEntity(HttpStatus.OK);
     }
+
+    @GetMapping("/getProductByUserId/{id}")
+    public ResponseEntity<List<ProductDto>> getProductByUserId (@PathVariable Long id){
+        return new ResponseEntity<>(productService.getProductByUserId(id),HttpStatus.OK);
+    }
+
+
 
 }
 
