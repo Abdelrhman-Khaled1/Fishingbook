@@ -9,4 +9,5 @@ public class ProductDtoRequest {
 
     private String content;
     private String title;
+    private Long categoryId;
 }

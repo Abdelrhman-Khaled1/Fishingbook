@@ -31,6 +31,10 @@ public class Product {
     private Instant updatedOn;
 
     @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @ManyToOne
     @JsonIgnore
     private User publisher;
 

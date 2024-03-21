@@ -1,14 +1,16 @@
 package com.example.security.product;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Data
 public class ProductDtoResponse {
 
     private Long id;
-    private String content;
     private String title;
+    private String content;
     private Long publisherId;
 }

@@ -38,6 +38,7 @@ public class ProductService {
 
         product.setPublisher(user);
         product.setCreatedOn(Instant.now());
+        product.setCategory(new Category(productDtoRequest.getCategoryId()));
 
 //        Product product = mapFromDtoToProduct(productDtoRequest);
 
@@ -49,7 +50,18 @@ public class ProductService {
         return products.stream().map(this::mapFromProductToDto).collect(Collectors.toList());
     }
 
-    public ProductDtoResponse readSingleProduct(Long id) {
+    public List<ProductDtoResponse> getProductsByCategoryId(Long id){
+        List<Product> productsByCategory_id = productRepository.findByCategory_Id(id);
+        return productsByCategory_id.stream()
+                .map(product -> new ProductDtoResponse(
+                        product.getId(),
+                        product.getTitle(),
+                        product.getContent(),
+                        product.getPublisher().getId()
+                )).collect(Collectors.toList());
+    }
+
+    public ProductDtoResponse getProductById(Long id) {
         Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("For id " + id));
         return mapFromProductToDto(product);
     }
@@ -68,6 +80,7 @@ public class ProductService {
         product.setTitle(productDtoRequest.getTitle());
         product.setContent(productDtoRequest.getContent());
         product.setUpdatedOn(Instant.now());
+        product.setCategory(new Category(productDtoRequest.getCategoryId()));
         return product;
     }
 
@@ -80,6 +93,7 @@ public class ProductService {
             product.setTitle(productDtoRequest.getTitle());
             product.setContent(productDtoRequest.getContent());
             product.setUpdatedOn(Instant.now());
+            product.setCategory(new Category(productDtoRequest.getCategoryId()));
 
             productRepository.save(product);
         } else {

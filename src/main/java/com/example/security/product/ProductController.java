@@ -25,11 +25,15 @@ public class ProductController {
         return new ResponseEntity<>(productService.getAllProducts(),HttpStatus.OK);
     }
 
+    @GetMapping("/getByCategoryId/{id}")
+    public ResponseEntity<List<ProductDtoResponse>> getProductsByCategoryId(@PathVariable Long id){
+        return new ResponseEntity<>(productService.getProductsByCategoryId(id),HttpStatus.OK);
+    }
 
 
-    @GetMapping("/get/{id}")
-    public ResponseEntity<ProductDtoResponse> getSingleProduct(@PathVariable @RequestBody Long id){
-        return new ResponseEntity<>(productService.readSingleProduct(id),HttpStatus.OK);
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDtoResponse> getProduct(@PathVariable Long id){
+        return new ResponseEntity<>(productService.getProductById(id),HttpStatus.OK);
     }
     @PostMapping("/update/{id}")
     public ResponseEntity updateProduct(@PathVariable Long id,@RequestBody ProductDtoRequest productDtoRequest){
