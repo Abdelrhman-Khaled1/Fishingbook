@@ -15,28 +15,30 @@ public class ProductController {
     private ProductService productService;
 
     @PostMapping
-    public ResponseEntity createProduct(@RequestBody ProductDto productDto){
-        productService.createProduct(productDto);
+    public ResponseEntity createProduct(@RequestBody ProductDtoRequest productDtoRequest){
+        productService.createProduct(productDtoRequest);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductDto>> showAllProducts(){
-        return new ResponseEntity<>(productService.showAllProducts(),HttpStatus.OK);
+    public ResponseEntity<List<ProductDtoResponse>> getAllProducts(){
+        return new ResponseEntity<>(productService.getAllProducts(),HttpStatus.OK);
     }
 
+
+
     @GetMapping("/get/{id}")
-    public ResponseEntity<ProductDto> getSingleProduct(@PathVariable @RequestBody Long id){
+    public ResponseEntity<ProductDtoResponse> getSingleProduct(@PathVariable @RequestBody Long id){
         return new ResponseEntity<>(productService.readSingleProduct(id),HttpStatus.OK);
     }
     @PostMapping("/update/{id}")
-    public ResponseEntity updateProduct(@PathVariable Long id,@RequestBody ProductDto productDto){
-        productService.updateProduct(id,productDto);
+    public ResponseEntity updateProduct(@PathVariable Long id,@RequestBody ProductDtoRequest productDtoRequest){
+        productService.updateProduct(id, productDtoRequest);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping("/getProductByUserId/{id}")
-    public ResponseEntity<List<ProductDto>> getProductByUserId (@PathVariable Long id){
+    public ResponseEntity<List<ProductDtoResponse>> getProductByUserId (@PathVariable Long id){
         return new ResponseEntity<>(productService.getProductByUserId(id),HttpStatus.OK);
     }
 

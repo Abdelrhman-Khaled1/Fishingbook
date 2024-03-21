@@ -5,10 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ProductDto {
+public class ProductDtoRequest {
 
-    private Long id;
     private String content;
     private String title;
-    private Long publisherId;
 }
