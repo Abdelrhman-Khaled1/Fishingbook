@@ -32,7 +32,7 @@ public class Product {
 
     @ManyToOne
     @JsonIgnore
-    private User user;
+    private User publisher;
 
 
 }

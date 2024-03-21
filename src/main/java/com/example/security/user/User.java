@@ -24,7 +24,7 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     private String firstname;
     private String lastname;
     private String email;
@@ -32,9 +32,9 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "publisher")
     @JsonIgnore
-    private List<Product> products;
+    private List<Product> publishedProducts;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

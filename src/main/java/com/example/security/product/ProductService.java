@@ -22,7 +22,7 @@ public class ProductService {
     private ProductRepository productRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserRepository userRepository;//TODO:: convert into user service
 
     public void createProduct(ProductDto productDto){
         Product product = new Product();
@@ -32,7 +32,7 @@ public class ProductService {
         UserDetails loggedInUser = authenticationService.getCurrentUser().orElseThrow(() -> new IllegalArgumentException("User Not Found"));
 
         Optional<User> user = userRepository.findByEmail(loggedInUser.getUsername());
-        product.setUser(user.get());
+        product.setPublisher(user.get());
 
 //        Product product = mapFromDtoToProduct(productDto);
         product.setCreatedOn(Instant.now());
@@ -55,6 +55,7 @@ public class ProductService {
         productDto.setId(product.getId());
         productDto.setTitle(product.getTitle());
         productDto.setContent(product.getContent());
+        productDto.setPublisherId(product.getPublisher().getId());
         return productDto;
     }
 
@@ -71,7 +72,7 @@ public class ProductService {
         UserDetails loggedInUser = authenticationService.getCurrentUser().orElseThrow(() -> new IllegalArgumentException("User Not Found"));
 
         Product product = productRepository.findById(id).get();
-        if(product.getUser().getEmail().equals(loggedInUser.getUsername())){
+        if(product.getPublisher().getEmail().equals(loggedInUser.getUsername())){
             product.setTitle(productDto.getTitle());
             product.setContent(productDto.getContent());
             product.setUpdatedOn(Instant.now());
@@ -84,7 +85,7 @@ public class ProductService {
     }
 
     public List<ProductDto> getProductByUserId(Long id){
-        List<Product> productsByUserId = productRepository.findByUserId(id);
+        List<Product> productsByUserId = productRepository.findByPublisherId(id);
         return productsByUserId.stream().map(this::mapFromProductToDto).collect(Collectors.toList());
     }
 
