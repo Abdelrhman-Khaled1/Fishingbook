@@ -11,6 +11,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Builder
@@ -37,6 +39,14 @@ public class Product {
     @ManyToOne
     @JsonIgnore
     private User publisher;
+
+
+    @ManyToMany(mappedBy = "likedProjects")
+    @JsonIgnore
+    private Set<User> likedEmployees = new HashSet<>();
+
+
+
 
 
 }

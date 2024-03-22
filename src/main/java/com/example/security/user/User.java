@@ -3,21 +3,22 @@ package com.example.security.user;
 import com.example.security.product.Product;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-@Data
-@Builder
+
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
+@Builder
 @Entity
 @Table(name = "_user")
 public class User implements UserDetails {
@@ -35,6 +36,19 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "publisher")
     @JsonIgnore
     private List<Product> publishedProducts;
+
+
+
+    @ManyToMany
+    @JoinTable(name = "_user_liked_products",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    private Set<Product> likedProjects = new HashSet<>();
+
+
+
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

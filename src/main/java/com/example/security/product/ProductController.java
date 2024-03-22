@@ -62,5 +62,16 @@ public class ProductController {
         return new ResponseEntity<>(productService.getProductsByTitleContains(title),HttpStatus.OK);
     }
 
+    @PutMapping("/like/{id}")
+    public ResponseEntity addProductToLiked(@PathVariable Long id){
+        productService.addProductToLiked(id);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+    @PutMapping("/dislike/{id}")
+    public void deleteProductFromLiked(@PathVariable Long id){
+        productService.deleteProductFromLiked(id);
+    }
+
+
 }
 

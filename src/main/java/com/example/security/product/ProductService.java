@@ -2,6 +2,7 @@ package com.example.security.product;
 
 import com.example.security.auth.AuthenticationService;
 import com.example.security.user.User;
+import com.example.security.user.UserRepository;
 import com.example.security.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -133,4 +135,35 @@ public class ProductService {
                         product.getPublisher().getId()
                 )).collect(Collectors.toList());
     }
+
+    public void addProductToLiked(Long id) {
+        UserDetails loggedInUser = authenticationService.getCurrentUser().orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+        User user = userService.findByEmail(loggedInUser.getUsername()).get();
+        Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("For id " + id));
+
+        Set<Product> productSet = null;
+        productSet = user.getLikedProjects();
+        productSet.add(product);
+        user.setLikedProjects(productSet);
+        userService.save(user);
+
+    }
+
+    public void deleteProductFromLiked(Long id) {
+        UserDetails loggedInUser = authenticationService.getCurrentUser().orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+        User user = userService.findByEmail(loggedInUser.getUsername()).get();
+
+        Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("For id " + id));
+
+        Set<Product> productSet = null;
+        productSet = user.getLikedProjects();
+        productSet.removeIf(item -> item.equals(product));
+        user.setLikedProjects(productSet);
+        userService.save(user);
+
+    }
+
+
+
+
 }
