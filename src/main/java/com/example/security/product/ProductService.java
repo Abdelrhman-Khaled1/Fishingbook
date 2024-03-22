@@ -104,4 +104,10 @@ public class ProductService {
         return productsByUserId.stream().map(this::mapFromProductToDto).collect(Collectors.toList());
     }
 
+    public List<ProductDtoResponse> getProductsThatIOwn() {
+        UserDetails loggedInUser = authenticationService.getCurrentUser().orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+        User user = userService.findByEmail(loggedInUser.getUsername()).get();
+        Long userId = user.getId();
+        return getProductByUserId(userId);
+    }
 }

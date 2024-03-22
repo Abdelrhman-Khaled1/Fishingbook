@@ -46,6 +46,11 @@ public class ProductController {
         return new ResponseEntity<>(productService.getProductByUserId(id),HttpStatus.OK);
     }
 
+    @GetMapping("/getProductsThatIOwn")
+    public ResponseEntity<List<ProductDtoResponse>> getProductsThatIOwn(){
+        return new ResponseEntity<>(productService.getProductsThatIOwn(),HttpStatus.OK);
+    }
+
 
 
 }
