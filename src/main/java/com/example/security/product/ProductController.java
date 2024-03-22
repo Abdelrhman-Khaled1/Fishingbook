@@ -57,6 +57,10 @@ public class ProductController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @GetMapping("/byTitleContains/{title}")
+    public ResponseEntity<List<ProductDtoResponse>> getProductByTitleContains(@PathVariable String title){
+        return new ResponseEntity<>(productService.getProductsByTitleContains(title),HttpStatus.OK);
+    }
 
 }
 

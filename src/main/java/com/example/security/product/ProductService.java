@@ -122,4 +122,15 @@ public class ProductService {
         }
 
     }
+
+    public List<ProductDtoResponse> getProductsByTitleContains(String title){
+        List<Product> ProductsByTitleContains = productRepository.findByTitleContaining(title);
+        return ProductsByTitleContains.stream()
+                .map(product -> new ProductDtoResponse(
+                        product.getId(),
+                        product.getTitle(),
+                        product.getContent(),
+                        product.getPublisher().getId()
+                )).collect(Collectors.toList());
+    }
 }
