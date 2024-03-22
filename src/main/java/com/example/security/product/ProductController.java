@@ -35,9 +35,9 @@ public class ProductController {
     public ResponseEntity<ProductDtoResponse> getProduct(@PathVariable Long id){
         return new ResponseEntity<>(productService.getProductById(id),HttpStatus.OK);
     }
-    @PostMapping("/update/{id}")
-    public ResponseEntity updateProduct(@PathVariable Long id,@RequestBody ProductDtoRequest productDtoRequest){
-        productService.updateProduct(id, productDtoRequest);
+    @PostMapping("/update")
+    public ResponseEntity updateProduct(@RequestBody ProductDtoUpdate productDtoUpdate){
+        productService.updateProduct(productDtoUpdate);
         return new ResponseEntity(HttpStatus.OK);
     }
 

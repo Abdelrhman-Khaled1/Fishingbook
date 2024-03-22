@@ -2,7 +2,6 @@ package com.example.security.product;
 
 import com.example.security.auth.AuthenticationService;
 import com.example.security.user.User;
-import com.example.security.user.UserRepository;
 import com.example.security.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,9 +19,6 @@ public class ProductService {
 
     @Autowired
     private ProductRepository productRepository;
-
-    @Autowired
-    private UserRepository userRepository;//TODO:: convert into user service
 
     @Autowired
     private UserService userService;
@@ -84,16 +80,17 @@ public class ProductService {
         return product;
     }
 
-    public void updateProduct(Long id, ProductDtoRequest productDtoRequest) {
+    public void updateProduct(ProductDtoUpdate productDtoUpdate) {
 
         UserDetails loggedInUser = authenticationService.getCurrentUser().orElseThrow(() -> new IllegalArgumentException("User Not Found"));
 
-        Product product = productRepository.findById(id).get();
+        Long productId = productDtoUpdate.getId();
+        Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException("For id " + productId));
         if (product.getPublisher().getEmail().equals(loggedInUser.getUsername())) {
-            product.setTitle(productDtoRequest.getTitle());
-            product.setContent(productDtoRequest.getContent());
+            product.setTitle(productDtoUpdate.getTitle());
+            product.setContent(productDtoUpdate.getContent());
             product.setUpdatedOn(Instant.now());
-            product.setCategory(new Category(productDtoRequest.getCategoryId()));
+            product.setCategory(new Category(productDtoUpdate.getCategoryId()));
 
             productRepository.save(product);
         } else {
