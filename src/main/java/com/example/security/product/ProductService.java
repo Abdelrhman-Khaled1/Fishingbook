@@ -118,12 +118,24 @@ public class ProductService {
 
         Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("For id " + id));
         if (product.getPublisher().getEmail().equals(loggedInUser.getUsername())) {
+
+            Set<User> likedEmployees = product.getLikedEmployees();
+            likedEmployees.stream()
+                    .forEach(user -> unAssignLikedProductFromUser(user, product));
             productRepository.deleteById(id);
-        }else {
+        } else {
             throw new IllegalArgumentException("User Mismatch");
         }
-
     }
+
+    private void unAssignLikedProductFromUser(User user,Product product) {
+        Set<Product> productSet = null;
+        productSet = user.getLikedProjects();
+        productSet.removeIf(item -> item.equals(product));
+        user.setLikedProjects(productSet);
+        userService.save(user);
+    }
+
 
     public List<ProductDtoResponse> getProductsByTitleContains(String title){
         List<Product> ProductsByTitleContains = productRepository.findByTitleContaining(title);
@@ -154,13 +166,7 @@ public class ProductService {
         User user = userService.findByEmail(loggedInUser.getUsername()).get();
 
         Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("For id " + id));
-
-        Set<Product> productSet = null;
-        productSet = user.getLikedProjects();
-        productSet.removeIf(item -> item.equals(product));
-        user.setLikedProjects(productSet);
-        userService.save(user);
-
+        unAssignLikedProductFromUser(user,product);
     }
 
 
@@ -175,4 +181,7 @@ public class ProductService {
                         user.getId()
                 )).collect(Collectors.toList());
     }
+
+
+
 }
