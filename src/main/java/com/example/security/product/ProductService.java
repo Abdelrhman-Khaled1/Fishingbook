@@ -164,6 +164,15 @@ public class ProductService {
     }
 
 
-
-
+    public List<ProductDtoResponse> getLikedProducts() {
+        UserDetails loggedInUser = authenticationService.getCurrentUser().orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+        User user = userService.findByEmail(loggedInUser.getUsername()).get();
+        return user.getLikedProjects().stream()
+                .map(product -> new ProductDtoResponse(
+                        product.getId(),
+                        product.getTitle(),
+                        product.getContent(),
+                        user.getId()
+                )).collect(Collectors.toList());
+    }
 }
