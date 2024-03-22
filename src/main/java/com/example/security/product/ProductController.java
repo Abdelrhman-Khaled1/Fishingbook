@@ -51,6 +51,11 @@ public class ProductController {
         return new ResponseEntity<>(productService.getProductsThatIOwn(),HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteProduct(@PathVariable Long id){
+        productService.deleteProduct(id);
+        return new ResponseEntity(HttpStatus.OK);
+    }
 
 
 }

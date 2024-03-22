@@ -110,4 +110,16 @@ public class ProductService {
         Long userId = user.getId();
         return getProductByUserId(userId);
     }
+
+    public void deleteProduct(Long id) {
+        UserDetails loggedInUser = authenticationService.getCurrentUser().orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+
+        Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("For id " + id));
+        if (product.getPublisher().getEmail().equals(loggedInUser.getUsername())) {
+            productRepository.deleteById(id);
+        }else {
+            throw new IllegalArgumentException("User Mismatch");
+        }
+
+    }
 }
