@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -182,6 +183,35 @@ public class ProductService {
                 )).collect(Collectors.toList());
     }
 
+        public List<ProductDtoLiked> allProductsWithFlagLikedOnes() {
+        List<ProductDtoResponse> likedProducts = getLikedProducts();
+        List<ProductDtoResponse> allProducts = getAllProducts();
+        List<ProductDtoLiked> productsWithLikedFlag = new ArrayList<>();
 
+        allProducts.stream()
+                .forEach(productDtoResponse -> {
+                    if (likedProducts.contains(productDtoResponse)) {
+                        productsWithLikedFlag.add(
+                                new ProductDtoLiked(
+                                        productDtoResponse.getId(),
+                                        productDtoResponse.getTitle(),
+                                        productDtoResponse.getContent(),
+                                        productDtoResponse.getPublisherId(),
+                                        true
+                                ));
+                    } else {
+                        productsWithLikedFlag.add(
+                                new ProductDtoLiked(
+                                        productDtoResponse.getId(),
+                                        productDtoResponse.getTitle(),
+                                        productDtoResponse.getContent(),
+                                        productDtoResponse.getPublisherId(),
+                                        false
+                                ));
+                    }
+                });
+
+        return productsWithLikedFlag;
+    }
 
 }

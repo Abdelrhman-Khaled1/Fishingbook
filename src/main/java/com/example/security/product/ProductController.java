@@ -78,6 +78,10 @@ public class ProductController {
         return new ResponseEntity<>(productService.getLikedProducts(),HttpStatus.OK);
     }
 
+    @GetMapping("/allProductsWithFlagLikedOnes")
+    public ResponseEntity<List<ProductDtoLiked>> allProductsWithFlagLikedOnes(){
+        return new ResponseEntity<>(productService.allProductsWithFlagLikedOnes(),HttpStatus.OK);
+    }
 
 }
 
