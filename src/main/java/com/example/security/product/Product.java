@@ -32,6 +32,9 @@ public class Product {
     private Instant createdOn;
     private Instant updatedOn;
 
+    private int price;
+    private String imageUrl;
+
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;

@@ -39,6 +39,8 @@ public class ProductService {
         product.setCreatedOn(Instant.now());
         product.setCategory(new Category(productDtoRequest.getCategoryId()));
 
+        product.setPrice(productDtoRequest.getPrice());
+        product.setImageUrl(productDtoRequest.getImageUrl());
 //        Product product = mapFromDtoToProduct(productDtoRequest);
 
         productRepository.save(product);
@@ -56,7 +58,9 @@ public class ProductService {
                         product.getId(),
                         product.getTitle(),
                         product.getContent(),
-                        product.getPublisher().getId()
+                        product.getPublisher().getId(),
+                        product.getPrice(),
+                        product.getImageUrl()
                 )).collect(Collectors.toList());
     }
 
@@ -71,6 +75,8 @@ public class ProductService {
         productDtoResponse.setTitle(product.getTitle());
         productDtoResponse.setContent(product.getContent());
         productDtoResponse.setPublisherId(product.getPublisher().getId());
+        productDtoResponse.setPrice(product.getPrice());
+        productDtoResponse.setImageUrl(product.getImageUrl());
         return productDtoResponse;
     }
 
@@ -80,6 +86,8 @@ public class ProductService {
         product.setContent(productDtoRequest.getContent());
         product.setUpdatedOn(Instant.now());
         product.setCategory(new Category(productDtoRequest.getCategoryId()));
+        product.setPrice(productDtoRequest.getPrice());
+        product.setImageUrl(productDtoRequest.getImageUrl());
         return product;
     }
 
@@ -94,6 +102,8 @@ public class ProductService {
             product.setContent(productDtoUpdate.getContent());
             product.setUpdatedOn(Instant.now());
             product.setCategory(new Category(productDtoUpdate.getCategoryId()));
+            product.setPrice(productDtoUpdate.getPrice());
+            product.setImageUrl(productDtoUpdate.getImageUrl());
 
             productRepository.save(product);
         } else {
@@ -145,7 +155,9 @@ public class ProductService {
                         product.getId(),
                         product.getTitle(),
                         product.getContent(),
-                        product.getPublisher().getId()
+                        product.getPublisher().getId(),
+                        product.getPrice(),
+                        product.getImageUrl()
                 )).collect(Collectors.toList());
     }
 
@@ -179,7 +191,9 @@ public class ProductService {
                         product.getId(),
                         product.getTitle(),
                         product.getContent(),
-                        user.getId()
+                        user.getId(),
+                        product.getPrice(),
+                        product.getImageUrl()
                 )).collect(Collectors.toList());
     }
 
@@ -197,6 +211,8 @@ public class ProductService {
                                         productDtoResponse.getTitle(),
                                         productDtoResponse.getContent(),
                                         productDtoResponse.getPublisherId(),
+                                        productDtoResponse.getPrice(),
+                                        productDtoResponse.getImageUrl(),
                                         true
                                 ));
                     } else {
@@ -206,6 +222,8 @@ public class ProductService {
                                         productDtoResponse.getTitle(),
                                         productDtoResponse.getContent(),
                                         productDtoResponse.getPublisherId(),
+                                        productDtoResponse.getPrice(),
+                                        productDtoResponse.getImageUrl(),
                                         false
                                 ));
                     }

@@ -15,5 +15,7 @@ public class ProductDtoLiked {
     private String title;
     private String content;
     private Long publisherId;
+    private int price;
+    private String imageUrl;
     private boolean liked;
 }

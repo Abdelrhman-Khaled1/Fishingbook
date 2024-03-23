@@ -10,4 +10,6 @@ public class ProductDtoRequest {
     private String content;
     private String title;
     private Long categoryId;
+    private int price;
+    private String imageUrl;
 }
