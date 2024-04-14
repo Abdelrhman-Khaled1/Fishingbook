@@ -12,9 +12,14 @@ public class UserService {
     private UserRepository userRepository;
 
     public Optional<User> findByEmail(String username) {
-       return userRepository.findByEmail(username);
+        return userRepository.findByEmail(username);
     }
+
+    public User findById(Long id) {
+        return userRepository.findById(id).get();
+    }
+
     public void save(User user) {
-       userRepository.save(user);
+        userRepository.save(user);
     }
 }

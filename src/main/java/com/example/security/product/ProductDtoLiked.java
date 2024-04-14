@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -14,8 +16,27 @@ public class ProductDtoLiked {
     private Long id;
     private String title;
     private String content;
+    private Long categoryId;
     private Long publisherId;
+    private String publisherName;
+    private String publisherImage;
+    private Instant createdOn;
+    private Instant updatedOn;
     private int price;
     private String imageUrl;
     private boolean liked;
+
+    public ProductDtoLiked(Long id, String title, String content, Long categoryId, Long publisherId, String publisherName, String publisherImage, Instant createdOn, Instant updatedOn, int price, String imageUrl) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.categoryId = categoryId;
+        this.publisherId = publisherId;
+        this.publisherName = publisherName;
+        this.publisherImage = publisherImage;
+        this.createdOn = createdOn;
+        this.updatedOn = updatedOn;
+        this.price = price;
+        this.imageUrl = imageUrl;
+    }
 }

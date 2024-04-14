@@ -2,7 +2,6 @@ package com.example.security.product;
 
 import com.example.security.auth.AuthenticationService;
 import com.example.security.user.User;
-import com.example.security.user.UserRepository;
 import com.example.security.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -51,7 +50,7 @@ public class ProductService {
         return products.stream().map(this::mapFromProductToDto).collect(Collectors.toList());
     }
 
-    public List<ProductDtoResponse> getProductsByCategoryId(Long id){
+    public List<ProductDtoResponse> getProductsByCategoryId(Long id) {
         List<Product> productsByCategory_id = productRepository.findByCategory_Id(id);
         return productsByCategory_id.stream()
                 .map(product -> new ProductDtoResponse(
@@ -139,7 +138,7 @@ public class ProductService {
         }
     }
 
-    private void unAssignLikedProductFromUser(User user,Product product) {
+    private void unAssignLikedProductFromUser(User user, Product product) {
         Set<Product> productSet = null;
         productSet = user.getLikedProjects();
         productSet.removeIf(item -> item.equals(product));
@@ -148,7 +147,7 @@ public class ProductService {
     }
 
 
-    public List<ProductDtoResponse> getProductsByTitleContains(String title){
+    public List<ProductDtoResponse> getProductsByTitleContains(String title) {
         List<Product> ProductsByTitleContains = productRepository.findByTitleContaining(title);
         return ProductsByTitleContains.stream()
                 .map(product -> new ProductDtoResponse(
@@ -179,7 +178,7 @@ public class ProductService {
         User user = userService.findByEmail(loggedInUser.getUsername()).get();
 
         Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("For id " + id));
-        unAssignLikedProductFromUser(user,product);
+        unAssignLikedProductFromUser(user, product);
     }
 
 
@@ -197,38 +196,68 @@ public class ProductService {
                 )).collect(Collectors.toList());
     }
 
-        public List<ProductDtoLiked> allProductsWithFlagLikedOnes() {
+    //    public List<ProductDtoLiked> allProductsWithFlagLikedOnes() {
+//        List<ProductDtoResponse> likedProducts = getLikedProducts();
+//        List<ProductDtoResponse> allProducts = getAllProducts();
+//        List<ProductDtoLiked> productsWithLikedFlag = new ArrayList<>();
+//
+//        allProducts.stream()
+//                .forEach(productDtoResponse -> {
+//                    if (likedProducts.contains(productDtoResponse)) {
+//                        productsWithLikedFlag.add(
+//                                new ProductDtoLiked(
+//                                        productDtoResponse.getId(),
+//                                        productDtoResponse.getTitle(),
+//                                        productDtoResponse.getContent(),
+//                                        productDtoResponse.getPublisherId(),
+//                                        productDtoResponse.getPrice(),
+//                                        productDtoResponse.getImageUrl(),
+//                                        true
+//                                ));
+//                    } else {
+//                        productsWithLikedFlag.add(
+//                                new ProductDtoLiked(
+//                                        productDtoResponse.getId(),
+//                                        productDtoResponse.getTitle(),
+//                                        productDtoResponse.getContent(),
+//                                        productDtoResponse.getPublisherId(),
+//                                        productDtoResponse.getPrice(),
+//                                        productDtoResponse.getImageUrl(),
+//                                        false
+//                                ));
+//                    }
+//                });
+//
+//        return productsWithLikedFlag;
+//    }
+    public List<ProductDtoLiked> allProductsWithFlagLikedOnes() {
+
         List<ProductDtoResponse> likedProducts = getLikedProducts();
-        List<ProductDtoResponse> allProducts = getAllProducts();
+        List<Product> allProducts = productRepository.findAll();
+
         List<ProductDtoLiked> productsWithLikedFlag = new ArrayList<>();
 
         allProducts.stream()
-                .forEach(productDtoResponse -> {
-                    if (likedProducts.contains(productDtoResponse)) {
-                        productsWithLikedFlag.add(
-                                new ProductDtoLiked(
-                                        productDtoResponse.getId(),
-                                        productDtoResponse.getTitle(),
-                                        productDtoResponse.getContent(),
-                                        productDtoResponse.getPublisherId(),
-                                        productDtoResponse.getPrice(),
-                                        productDtoResponse.getImageUrl(),
-                                        true
-                                ));
-                    } else {
-                        productsWithLikedFlag.add(
-                                new ProductDtoLiked(
-                                        productDtoResponse.getId(),
-                                        productDtoResponse.getTitle(),
-                                        productDtoResponse.getContent(),
-                                        productDtoResponse.getPublisherId(),
-                                        productDtoResponse.getPrice(),
-                                        productDtoResponse.getImageUrl(),
-                                        false
-                                ));
-                    }
-                });
+                .forEach(product -> {
+                    User publisher = product.getPublisher();
+                    ProductDtoLiked productDtoLiked = new ProductDtoLiked(
+                            product.getId(),
+                            product.getTitle(),
+                            product.getContent(),
+                            product.getCategory().getId(),
+                            publisher.getId(),
+                            publisher.getFirstname() + " " + publisher.getLastname(),
+                            null,
+                            product.getCreatedOn(),
+                            product.getUpdatedOn(),
+                            product.getPrice(),
+                            product.getImageUrl()
+                    );
 
+                    boolean isLiked = likedProducts.stream().anyMatch(likedProduct -> likedProduct.getId() == product.getId());
+                    productDtoLiked.setLiked(isLiked);
+                    productsWithLikedFlag.add(productDtoLiked);
+                });
         return productsWithLikedFlag;
     }
 
