@@ -182,15 +182,19 @@ public class ProductService {
     }
 
 
-    public List<ProductDtoResponse> getLikedProducts() {
+    public List<ProductDtoResponseWithUserData> getLikedProducts() {
         UserDetails loggedInUser = authenticationService.getCurrentUser().orElseThrow(() -> new IllegalArgumentException("User Not Found"));
         User user = userService.findByEmail(loggedInUser.getUsername()).get();
         return user.getLikedProjects().stream()
-                .map(product -> new ProductDtoResponse(
+                .map(product -> new ProductDtoResponseWithUserData(
                         product.getId(),
                         product.getTitle(),
                         product.getContent(),
                         user.getId(),
+                        user.getFirstname() + " " + user.getLastname(),
+                        null,
+                        product.getCreatedOn(),
+                        product.getUpdatedOn(),
                         product.getPrice(),
                         product.getImageUrl()
                 )).collect(Collectors.toList());
@@ -230,9 +234,9 @@ public class ProductService {
 //
 //        return productsWithLikedFlag;
 //    }
-    public List<ProductDtoLiked> allProductsWithFlagLikedOnes() {
+    public List<ProductDtoLiked> allProductsWithFlagLikedOnes() {//TODO:: Need to be refactored
 
-        List<ProductDtoResponse> likedProducts = getLikedProducts();
+        List<ProductDtoResponseWithUserData> likedProducts = getLikedProducts();
         List<Product> allProducts = productRepository.findAll();
 
         List<ProductDtoLiked> productsWithLikedFlag = new ArrayList<>();

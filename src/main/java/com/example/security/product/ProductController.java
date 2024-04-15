@@ -74,7 +74,7 @@ public class ProductController {
 
 
     @GetMapping("/likedProducts")
-    public ResponseEntity<List<ProductDtoResponse>> getLikedProducts(){
+    public ResponseEntity<List<ProductDtoResponseWithUserData>> getLikedProducts(){
         return new ResponseEntity<>(productService.getLikedProducts(),HttpStatus.OK);
     }
 
