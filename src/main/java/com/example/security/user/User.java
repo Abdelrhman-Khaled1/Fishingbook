@@ -8,10 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @NoArgsConstructor
@@ -30,6 +27,13 @@ public class User implements UserDetails {
     private String lastname;
     private String email;
     private String password;
+
+
+    private String imageUrl;
+    private Long phone;
+    private String address;
+    private String bio;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
