@@ -51,7 +51,8 @@ public class User implements UserDetails {
     )
     private Set<Product> likedProjects = new HashSet<>();
 
-
+    @ManyToMany(mappedBy = "reporters")
+    private Set<Product> productsToReport = new HashSet<>();
 
 
 

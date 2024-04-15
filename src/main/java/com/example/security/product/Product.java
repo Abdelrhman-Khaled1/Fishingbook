@@ -49,7 +49,16 @@ public class Product {
     private Set<User> likedEmployees = new HashSet<>();
 
 
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(name = "_user_report_products",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> reporters = new HashSet<>();
 
+    @JsonIgnore
+    private int numberOfReports;
 
 
 }

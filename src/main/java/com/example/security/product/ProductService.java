@@ -265,4 +265,18 @@ public class ProductService {
         return productsWithLikedFlag;
     }
 
+    public void reportProduct(Long id) {
+
+        UserDetails loggedInUser = authenticationService.getCurrentUser().orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+        User user = userService.findByEmail(loggedInUser.getUsername()).get();
+
+        Product product = productRepository.findById(id).get();
+        Set<User> reporters = product.getReporters();
+        if(!reporters.contains(user)){
+            reporters.add(user);
+            product.setReporters(reporters);
+            product.setNumberOfReports(product.getNumberOfReports()+1);
+            productRepository.save(product);
+        }
+    }
 }

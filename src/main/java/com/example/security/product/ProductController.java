@@ -83,5 +83,11 @@ public class ProductController {
         return new ResponseEntity<>(productService.allProductsWithFlagLikedOnes(),HttpStatus.OK);
     }
 
+    @PutMapping("/report/{id}")
+    public ResponseEntity reportProduct(@PathVariable Long id){
+        productService.reportProduct(id);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
 }
 
