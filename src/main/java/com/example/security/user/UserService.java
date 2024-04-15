@@ -38,6 +38,7 @@ public class UserService {
         user.setPhone(userDtoRequest.getPhone());
         user.setAddress(userDtoRequest.getAddress());
         user.setBio(userDtoRequest.getBio());
+        user.setBirthdate(userDtoRequest.getBirthdate());
         userRepository.save(user);
     }
 
@@ -55,6 +56,7 @@ public class UserService {
         userDto.setPhone(user.getPhone());
         userDto.setAddress(user.getAddress());
         userDto.setBio(user.getBio());
+        userDto.setBirthdate(user.getBirthdate());
         return userDto;
     }
 

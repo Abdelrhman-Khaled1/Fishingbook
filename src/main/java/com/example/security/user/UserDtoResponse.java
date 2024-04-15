@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.URL;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 public class UserDtoResponse {
@@ -18,6 +20,7 @@ public class UserDtoResponse {
     private Long phone;
     private String address;
     private String bio;
+    private LocalDate birthdate;
 }
 
 

@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.util.*;
 
 
@@ -28,7 +29,7 @@ public class User implements UserDetails {
     private String email;
     private String password;
 
-
+    private LocalDate birthdate;
     private String imageUrl;
     private Long phone;
     private String address;
