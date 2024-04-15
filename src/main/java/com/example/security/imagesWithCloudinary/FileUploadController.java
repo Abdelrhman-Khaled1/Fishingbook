@@ -20,4 +20,10 @@ public class FileUploadController {
         return new ImageUrl(imageURL);
     }
 
+    @PostMapping("/uploadUserImage")
+    public ImageUrl uploadUserImage(@RequestParam("image")MultipartFile multipartFile) throws IOException {
+        String imageURL = fileUpload.uploadUserImage(multipartFile);
+        return new ImageUrl(imageURL);
+    }
+
 }
