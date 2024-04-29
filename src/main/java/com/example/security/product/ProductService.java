@@ -116,11 +116,30 @@ public class ProductService {
         return productsByUserId.stream().map(this::mapFromProductToDto).collect(Collectors.toList());
     }
 
-    public List<ProductDtoResponse> getProductsThatIOwn() {
+    private List<Product> getProductsByUserId(Long id){
+        return productRepository.findByPublisherId(id);
+    }
+
+    public List<ProductDtoResponseIOwn> getProductsThatIOwn() {
         UserDetails loggedInUser = authenticationService.getCurrentUser().orElseThrow(() -> new IllegalArgumentException("User Not Found"));
         User user = userService.findByEmail(loggedInUser.getUsername()).get();
         Long userId = user.getId();
-        return getProductByUserId(userId);
+
+        List<Product> productsByUserId = getProductsByUserId(userId);
+
+        return productsByUserId.stream()
+                .map(product -> ProductDtoResponseIOwn.builder()
+                        .id(product.getId())
+                        .title(product.getTitle())
+                        .content(product.getContent())
+                        .price(product.getPrice())
+                        .imageUrl(product.getImageUrl())
+                        .categoryId(product.getCategory().getId())
+                        .createdOn(product.getCreatedOn().toString())
+                        .updatedOn(product.getUpdatedOn() != null ? product.getUpdatedOn().toString() : null)
+                        .build()
+                )
+                .collect(Collectors.toList());
     }
 
     public void deleteProduct(Long id) {
@@ -192,9 +211,9 @@ public class ProductService {
                         product.getContent(),
                         user.getId(),
                         user.getFirstname() + " " + user.getLastname(),
-                        null,
-                        product.getCreatedOn(),
-                        product.getUpdatedOn(),
+                        user.getImageUrl(),
+                        product.getCreatedOn().toString(),
+                        product.getUpdatedOn() != null ? product.getUpdatedOn().toString() : null,
                         product.getPrice(),
                         product.getImageUrl()
                 )).collect(Collectors.toList());
@@ -252,8 +271,8 @@ public class ProductService {
                             publisher.getId(),
                             publisher.getFirstname() + " " + publisher.getLastname(),
                             null,
-                            product.getCreatedOn(),
-                            product.getUpdatedOn(),
+                            product.getCreatedOn().toString(),
+                            product.getUpdatedOn() != null ? product.getUpdatedOn().toString() : null,
                             product.getPrice(),
                             product.getImageUrl()
                     );
@@ -272,10 +291,10 @@ public class ProductService {
 
         Product product = productRepository.findById(id).get();
         Set<User> reporters = product.getReporters();
-        if(!reporters.contains(user)){
+        if (!reporters.contains(user)) {
             reporters.add(user);
             product.setReporters(reporters);
-            product.setNumberOfReports(product.getNumberOfReports()+1);
+            product.setNumberOfReports(product.getNumberOfReports() + 1);
             productRepository.save(product);
         }
     }

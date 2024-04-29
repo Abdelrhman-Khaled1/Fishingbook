@@ -47,7 +47,7 @@ public class ProductController {
     }
 
     @GetMapping("/getProductsThatIOwn")
-    public ResponseEntity<List<ProductDtoResponse>> getProductsThatIOwn(){
+    public ResponseEntity<List<ProductDtoResponseIOwn>> getProductsThatIOwn(){
         return new ResponseEntity<>(productService.getProductsThatIOwn(),HttpStatus.OK);
     }
 

@@ -5,21 +5,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Data
-public class ProductDtoResponseWithUserData {
+public class ProductDtoResponseIOwn {
     private Long id;
     private String title;
     private String content;
-    private Long publisherId;
-    private String publisherName;
-    private String publisherImage;
-    private String createdOn;
-    private String updatedOn;
     private int price;
     private String imageUrl;
+    private Long categoryId;
+    private String createdOn;
+    private String updatedOn;
 }
