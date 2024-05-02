@@ -15,6 +15,8 @@ public class FishDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String header;
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
