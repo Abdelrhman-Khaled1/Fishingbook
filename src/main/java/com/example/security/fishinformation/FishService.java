@@ -10,9 +10,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,7 +21,7 @@ public class FishService {
     @Autowired
     private FishDetailsRepository detailsRepo;
 
-    public Set<FishDto> getFishes() {
+    public List<FishDto> getFishes() {
         return fishRepository.findAll().stream().map(fishEntity -> {
             return new FishDto(fishEntity.getId(),
                     fishEntity.getName(),
@@ -31,9 +30,9 @@ public class FishService {
                                 return new FishDetailsDto(fishDetails.getHeader(),
                                         fishDetails.getContent());
                             }
-                    ).collect(Collectors.toSet())
+                    ).collect(Collectors.toList())
             );
-        }).collect(Collectors.toSet());
+        }).collect(Collectors.toList());
     }
 
     @Transactional
@@ -44,18 +43,18 @@ public class FishService {
         fishEntity.setName(fishDto.getName());
         fishEntity.setImageUrl(fishDto.getImageUrl());
 
-        Set<FishDetails> fishDetailsSet = new HashSet<>();
+        List<FishDetails> fishDetailsList = new ArrayList<>();
         if (fishDto.getFishDetails() != null) {
             for (FishDetailsDto detailsDto : fishDto.getFishDetails()) {
                 FishDetails detail = new FishDetails();
                 detail.setHeader(detailsDto.getHeader());
                 detail.setContent(detailsDto.getContent());
                 detail.setFish(fishEntity); // Set the relationship
-                fishDetailsSet.add(detail);
+                fishDetailsList.add(detail);
             }
         }
 
-        fishEntity.setFishDetails(fishDetailsSet);
+        fishEntity.setFishDetails(fishDetailsList);
 
         // Save FishEntity along with FishDetails
         fishRepository.save(fishEntity);

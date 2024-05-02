@@ -5,6 +5,7 @@ import com.example.security.fishinformation.entity.FishEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -18,7 +19,7 @@ public class FishController {
         fishService.save(fishDto);
     }
     @GetMapping
-    public Set<FishDto> getAll(){
+    public List<FishDto> getAll(){
         return fishService.getFishes();
     }
 }
