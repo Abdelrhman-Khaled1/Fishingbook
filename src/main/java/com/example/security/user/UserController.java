@@ -26,6 +26,11 @@ public class UserController {
         return new ResponseEntity<>(userService.getAllUsers(),HttpStatus.OK);
     }
 
+    @GetMapping("/user")
+    public ResponseEntity<UserDtoResponse> getCurrentUser(){
+        return new ResponseEntity<>(userService.getCurrentUser(),HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<UserDtoResponse> getUserById(@PathVariable Long id){
         return new ResponseEntity<>(userService.findUserById(id),HttpStatus.OK);

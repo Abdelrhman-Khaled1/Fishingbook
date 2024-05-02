@@ -65,4 +65,9 @@ public class UserService {
         return optionalUser.map(this::mapUserToUserDtoResponse).orElse(null);
     }
 
+    public UserDtoResponse getCurrentUser() {
+        UserDetails loggedInUser = authenticationService.getCurrentUser().orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+        User user = findByEmail(loggedInUser.getUsername()).get();
+        return mapUserToUserDtoResponse(user);
+    }
 }
