@@ -270,7 +270,7 @@ public class ProductService {
                             product.getCategory().getId(),
                             publisher.getId(),
                             publisher.getFirstname() + " " + publisher.getLastname(),
-                            null,
+                            publisher.getImageUrl(),
                             product.getCreatedOn().toString(),
                             product.getUpdatedOn() != null ? product.getUpdatedOn().toString() : null,
                             product.getPrice(),
