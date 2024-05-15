@@ -4,10 +4,12 @@ import com.example.security.auth.AuthenticationService;
 import com.example.security.user.User;
 import com.example.security.user.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -74,5 +76,34 @@ public class PostService {
         Post post = postRepository.findById(id).get();
         if (authenticationService.getCurrentUser().get().getUsername().equals(userService.findById(post.getCreatedBy()).getEmail()))
             postRepository.delete(post);
+    }
+
+    public void addPostToLiked(Long id) {
+        UserDetails loggedInUser = authenticationService.getCurrentUser().orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+        User user = (User) loggedInUser;
+        Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("For id " + id));
+
+        Set<User> userSet = null;
+        userSet = post.getLikes();
+        userSet.add(user);
+        post.setLikes(userSet);
+        postRepository.save(post);
+    }
+
+    public void deletePostFromLike(Long id) {
+        UserDetails loggedInUser = authenticationService.getCurrentUser().orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+        User user = userService.findByEmail(loggedInUser.getUsername()).get();
+
+        Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("For id " + id));
+        unAssignUserFromProductLikes(user, post);
+    }
+
+    private void unAssignUserFromProductLikes(User user, Post post) {
+        Set<User> userSet = null;
+        userSet = post.getLikes();
+        userSet.removeIf(item -> item.equals(user));
+        post.setLikes(userSet);
+        postRepository.save(post);
+
     }
 }

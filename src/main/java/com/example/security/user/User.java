@@ -1,5 +1,6 @@
 package com.example.security.user;
 
+import com.example.security.post.Post;
 import com.example.security.product.Product;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -54,6 +55,9 @@ public class User implements UserDetails {
     @ManyToMany(mappedBy = "reporters")
     private Set<Product> productsToReport = new HashSet<>();
 
+    @ManyToMany(mappedBy = "likes")
+    @JsonIgnore
+    private Set<Post> likedPosts = new HashSet<>();
 
 
     @Override

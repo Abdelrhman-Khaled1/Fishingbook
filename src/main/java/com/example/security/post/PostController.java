@@ -1,6 +1,7 @@
 package com.example.security.post;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,6 +37,15 @@ public class PostController {
     }
 
 
+    @PutMapping("/like/{id}")
+    public ResponseEntity addPostToLiked(@PathVariable Long id){
+        postService.addPostToLiked(id);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+    @PutMapping("/dislike/{id}")
+    public void deletePostFromLiked(@PathVariable Long id){
+        postService.deletePostFromLike(id);
+    }
 
 
 }
