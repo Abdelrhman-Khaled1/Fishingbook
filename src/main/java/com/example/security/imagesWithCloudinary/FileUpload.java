@@ -9,4 +9,5 @@ public interface FileUpload {
     String uploadUserImage(MultipartFile multipartFile) throws IOException;
 
     String uploadFishImage(MultipartFile multipartFile) throws IOException;
+    String uploadPostImage(MultipartFile multipartFile) throws IOException;
 }

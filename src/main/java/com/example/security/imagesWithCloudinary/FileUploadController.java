@@ -31,4 +31,10 @@ public class FileUploadController {
         return new ImageUrl(imageURL);
     }
 
+    @PostMapping("/uploadPostImage")
+    public ImageUrl uploadPostImage(@RequestParam("image")MultipartFile multipartFile) throws IOException {
+        String imageURL = fileUpload.uploadPostImage(multipartFile);
+        return new ImageUrl(imageURL);
+    }
+
 }

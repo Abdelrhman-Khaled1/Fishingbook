@@ -52,4 +52,16 @@ public class FileUploadImpl implements FileUpload{
                 .get("url")
                 .toString();
     }
+
+    @Override
+    public String uploadPostImage(MultipartFile multipartFile) throws IOException {
+        Map<String, String > params = new HashMap<>();
+        params.put("folder", "PostsImages");
+        params.put("public_id", UUID.randomUUID().toString());
+
+        return cloudinary.uploader()
+                .upload(multipartFile.getBytes(),params)
+                .get("url")
+                .toString();
+    }
 }
