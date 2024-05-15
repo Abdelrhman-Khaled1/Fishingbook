@@ -40,7 +40,8 @@ public class PostService {
                             user.getId(),
                             user.getFirstname() + " " + user.getLastname(),
                             user.getImageUrl(),
-                            post.getCreateDate().toString()
+                            post.getCreateDate().toString(),
+                            post.getNumberOfLikes()
                     );
                     return dto;
                 }
@@ -58,7 +59,8 @@ public class PostService {
                 user.getId(),
                 user.getFirstname() + " " + user.getLastname(),
                 user.getImageUrl(),
-                post.getCreateDate().toString()
+                post.getCreateDate().toString(),
+                post.getNumberOfLikes()
         );
     }
 
@@ -87,6 +89,7 @@ public class PostService {
         userSet = post.getLikes();
         userSet.add(user);
         post.setLikes(userSet);
+        post.setNumberOfLikes(userSet.size());
         postRepository.save(post);
     }
 
@@ -103,6 +106,7 @@ public class PostService {
         userSet = post.getLikes();
         userSet.removeIf(item -> item.equals(user));
         post.setLikes(userSet);
+        post.setNumberOfLikes(userSet.size());
         postRepository.save(post);
 
     }

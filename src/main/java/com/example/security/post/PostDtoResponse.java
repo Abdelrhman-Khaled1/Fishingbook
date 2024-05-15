@@ -16,4 +16,5 @@ public class PostDtoResponse {
     private String publisherImageUrl;
 
     private String createdAt;
+    private int numberOfLikes;
 }

@@ -38,10 +38,6 @@ public class Post {
     )
     private LocalDateTime createDate;
 
-    @LastModifiedDate
-    @Column(insertable = false)
-    private LocalDateTime lastModifiedDate;
-
     @CreatedBy
     @Column(
             nullable = false,
