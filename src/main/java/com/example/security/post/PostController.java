@@ -1,11 +1,13 @@
 package com.example.security.post;
 
+import com.example.security.user.UserSummary;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -47,5 +49,9 @@ public class PostController {
         postService.deletePostFromLike(id);
     }
 
+    @GetMapping("/getUsersLikesPost/{id}")
+    public Set<UserSummary> getUsersLikesPost(@PathVariable Long id){
+        return postService.getUsersLikesPost(id);
+    }
 
 }

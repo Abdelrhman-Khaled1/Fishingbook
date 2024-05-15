@@ -3,6 +3,7 @@ package com.example.security.post;
 import com.example.security.auth.AuthenticationService;
 import com.example.security.user.User;
 import com.example.security.user.UserService;
+import com.example.security.user.UserSummary;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -109,5 +110,13 @@ public class PostService {
         post.setNumberOfLikes(userSet.size());
         postRepository.save(post);
 
+    }
+
+    public Set<UserSummary> getUsersLikesPost(Long id) {
+        Post post = postRepository.findById(id).get();
+        Set<User> users = post.getLikes();
+        return users.stream().map(
+                user -> new UserSummary(user.getId(), user.getFirstname(), user.getImageUrl())
+        ).collect(Collectors.toSet());
     }
 }
