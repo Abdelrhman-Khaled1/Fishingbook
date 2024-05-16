@@ -54,4 +54,15 @@ public class PostController {
         return postService.getUsersLikesPost(id);
     }
 
+
+    @GetMapping("/getPostsByJwt")
+    public List<PostDtoResponse> getPostsByJwt(){
+        return postService.getPostsByJwt();
+    }
+    @GetMapping("/getPostsByUserId/{id}")
+    public List<PostDtoResponse> getPostsByUserId(@PathVariable Long id){
+        return postService.getPostsByUserId(id);
+    }
+
+
 }

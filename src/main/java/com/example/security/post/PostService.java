@@ -119,4 +119,40 @@ public class PostService {
                 user -> new UserSummary(user.getId(), user.getFirstname(), user.getImageUrl())
         ).collect(Collectors.toSet());
     }
+
+    public List<PostDtoResponse> getPostsByJwt() {
+        UserDetails loggedInUser = authenticationService.getCurrentUser().orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+        User user = userService.findByEmail(loggedInUser.getUsername()).get();
+        List<Post> posts = postRepository.findByCreatedBy(user.getId());
+        return posts.stream().map(
+                post -> new PostDtoResponse(
+                        post.getId(),
+                        post.getContent(),
+                        post.getImageUrl(),
+                        user.getId(),
+                        user.getFirstname()+" "+user.getLastname(),
+                        user.getImageUrl(),
+                        post.getCreateDate().toString(),
+                        post.getNumberOfLikes()
+                )
+        ).collect(Collectors.toList());
+    }
+    public List<PostDtoResponse> getPostsByUserId(Long id) {
+        User user = userService.findById(id);
+        List<Post> posts = postRepository.findByCreatedBy(id);
+        return posts.stream().map(
+                post -> new PostDtoResponse(
+                        post.getId(),
+                        post.getContent(),
+                        post.getImageUrl(),
+                        user.getId(),
+                        user.getFirstname()+" "+user.getLastname(),
+                        user.getImageUrl(),
+                        post.getCreateDate().toString(),
+                        post.getNumberOfLikes()
+                )
+        ).collect(Collectors.toList());
+    }
+
+
 }
