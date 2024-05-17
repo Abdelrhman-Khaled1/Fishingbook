@@ -1,6 +1,7 @@
 package com.example.security.user;
 
 import com.example.security.post.Post;
+import com.example.security.post.comment.Comment;
 import com.example.security.product.Product;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -59,6 +60,8 @@ public class User implements UserDetails {
     @JsonIgnore
     private Set<Post> likedPosts = new HashSet<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Comment> userComments;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
