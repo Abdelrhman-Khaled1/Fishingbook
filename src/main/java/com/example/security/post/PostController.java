@@ -23,7 +23,7 @@ public class PostController {
 
     @GetMapping
     public ResponseEntity<List<PostDtoResponse>> findAllPosts(){
-        return ResponseEntity.ok(postService.findAll());
+        return ResponseEntity.ok(postService.getAllPostsWithLikedFlag());
     }
 
     @PutMapping
@@ -57,11 +57,11 @@ public class PostController {
 
     @GetMapping("/getPostsByJwt")
     public List<PostDtoResponse> getPostsByJwt(){
-        return postService.getPostsByJwt();
+        return postService.getPostsByJwtWithLikedFlag();
     }
     @GetMapping("/getPostsByUserId/{id}")
     public List<PostDtoResponse> getPostsByUserId(@PathVariable Long id){
-        return postService.getPostsByUserId(id);
+        return postService.getPostsByUserIdWithLikedFlag(id);
     }
 
 

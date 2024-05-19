@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -42,7 +43,8 @@ public class PostService {
                             user.getFirstname() + " " + user.getLastname(),
                             user.getImageUrl(),
                             post.getCreateDate().toString(),
-                            post.getNumberOfLikes()
+                            post.getNumberOfLikes(),
+                            post.getNumberOfComments()
                     );
                     return dto;
                 }
@@ -61,13 +63,13 @@ public class PostService {
                 user.getFirstname() + " " + user.getLastname(),
                 user.getImageUrl(),
                 post.getCreateDate().toString(),
-                post.getNumberOfLikes()
+                post.getNumberOfLikes(),
+                post.getNumberOfComments()
         );
     }
 
     public void update(PostDtoUpdate postDtoUpdate) {
         Post post = postRepository.findById(postDtoUpdate.getId()).get();
-        System.out.println("hello");
         if (!authenticationService.getCurrentUser().get().getUsername().equals(userService.findById(post.getCreatedBy()).getEmail()))
             throw new UsernameNotFoundException("Wrong user try to update the product");
         post.setContent(postDtoUpdate.getContent());
@@ -133,7 +135,8 @@ public class PostService {
                         user.getFirstname()+" "+user.getLastname(),
                         user.getImageUrl(),
                         post.getCreateDate().toString(),
-                        post.getNumberOfLikes()
+                        post.getNumberOfLikes(),
+                        post.getNumberOfComments()
                 )
         ).collect(Collectors.toList());
     }
@@ -149,10 +152,103 @@ public class PostService {
                         user.getFirstname()+" "+user.getLastname(),
                         user.getImageUrl(),
                         post.getCreateDate().toString(),
-                        post.getNumberOfLikes()
+                        post.getNumberOfLikes(),
+                        post.getNumberOfComments()
                 )
         ).collect(Collectors.toList());
     }
+
+    public boolean isUserLikesPost(User user,Post post){
+        return post.getLikes().contains(user);
+    }
+
+    public List<PostDtoResponse> getAllPostsWithLikedFlag() {
+
+        UserDetails loggedInUser = authenticationService.getCurrentUser().orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+        User user = userService.findByEmail(loggedInUser.getUsername()).get();
+
+        List<Post> posts = postRepository.findAll();
+
+        List<PostDtoResponse> flaggedPosts = new ArrayList<>(posts.size());
+
+        for (int i = 0; i < posts.size(); i++) {
+            Post post = posts.get(i);
+            boolean isUserLikesPost = isUserLikesPost(user, post);
+            flaggedPosts.add(
+                    new PostDtoResponse(
+                            post.getId(),
+                            post.getContent(),
+                            post.getImageUrl(),
+                            user.getId(),
+                            user.getFirstname() + " " + user.getLastname(),
+                            user.getImageUrl(),
+                            post.getCreateDate().toString(),
+                            post.getNumberOfLikes(),
+                            post.getNumberOfComments(),
+                            isUserLikesPost
+                    )
+            );
+        }
+        return flaggedPosts;
+    }
+
+    public List<PostDtoResponse> getPostsByJwtWithLikedFlag() {
+        UserDetails loggedInUser = authenticationService.getCurrentUser().orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+        User user = userService.findByEmail(loggedInUser.getUsername()).get();
+
+        List<Post> posts = postRepository.findByCreatedBy(user.getId());
+
+        return posts.stream().map(
+                post -> {
+                    boolean isUserLikesPost = isUserLikesPost(user, post);
+                    PostDtoResponse postDtoResponse = new PostDtoResponse(
+                            post.getId(),
+                            post.getContent(),
+                            post.getImageUrl(),
+                            user.getId(),
+                            user.getFirstname() + " " + user.getLastname(),
+                            user.getImageUrl(),
+                            post.getCreateDate().toString(),
+                            post.getNumberOfLikes(),
+                            post.getNumberOfComments(),
+                            isUserLikesPost
+                    );
+                    return postDtoResponse;
+                }
+        ).collect(Collectors.toList());
+    }
+
+    public List<PostDtoResponse> getPostsByUserIdWithLikedFlag(Long id) {
+        User user = userService.findById(id);
+        List<Post> posts = postRepository.findByCreatedBy(id);
+
+
+
+        return posts.stream().map(
+                post -> {
+                    boolean isUserLikesPost = isUserLikesPost(user, post);
+                    PostDtoResponse postDtoResponse = new PostDtoResponse(
+                            post.getId(),
+                            post.getContent(),
+                            post.getImageUrl(),
+                            user.getId(),
+                            user.getFirstname() + " " + user.getLastname(),
+                            user.getImageUrl(),
+                            post.getCreateDate().toString(),
+                            post.getNumberOfLikes(),
+                            post.getNumberOfComments(),
+                            isUserLikesPost
+                    );
+                    return postDtoResponse;
+                }
+        ).collect(Collectors.toList());
+    }
+
+
+
+
+
+
 
 
 }
