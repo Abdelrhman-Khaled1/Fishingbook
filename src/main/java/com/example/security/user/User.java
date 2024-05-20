@@ -3,6 +3,7 @@ package com.example.security.user;
 import com.example.security.post.Post;
 import com.example.security.post.comment.Comment;
 import com.example.security.product.Product;
+import com.example.security.user.follow.Follow;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -51,7 +52,7 @@ public class User implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id")
     )
-    private Set<Product> likedProjects = new HashSet<>();
+    private List<Product> likedProducts = new ArrayList<>();
 
     @ManyToMany(mappedBy = "reporters")
     private Set<Product> productsToReport = new HashSet<>();
@@ -62,6 +63,10 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Comment> userComments;
+
+
+    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Follow> follows = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

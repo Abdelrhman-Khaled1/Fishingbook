@@ -158,10 +158,10 @@ public class ProductService {
     }
 
     private void unAssignLikedProductFromUser(User user, Product product) {
-        Set<Product> productSet = null;
-        productSet = user.getLikedProjects();
-        productSet.removeIf(item -> item.equals(product));
-        user.setLikedProjects(productSet);
+        List<Product> productList = null;
+        productList = user.getLikedProducts();
+        productList.removeIf(item -> item.equals(product));
+        user.setLikedProducts(productList);
         userService.save(user);
     }
 
@@ -184,10 +184,10 @@ public class ProductService {
         User user = userService.findByEmail(loggedInUser.getUsername()).get();
         Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("For id " + id));
 
-        Set<Product> productSet = null;
-        productSet = user.getLikedProjects();
-        productSet.add(product);
-        user.setLikedProjects(productSet);
+        List<Product> productList = null;
+        productList = user.getLikedProducts();
+        productList.add(product);
+        user.setLikedProducts(productList);
         userService.save(user);
 
     }
@@ -204,14 +204,14 @@ public class ProductService {
     public List<ProductDtoResponseWithUserData> getLikedProducts() {
         UserDetails loggedInUser = authenticationService.getCurrentUser().orElseThrow(() -> new IllegalArgumentException("User Not Found"));
         User user = userService.findByEmail(loggedInUser.getUsername()).get();
-        return user.getLikedProjects().stream()
+        return user.getLikedProducts().stream()
                 .map(product -> new ProductDtoResponseWithUserData(
                         product.getId(),
                         product.getTitle(),
                         product.getContent(),
-                        user.getId(),
-                        user.getFirstname() + " " + user.getLastname(),
-                        user.getImageUrl(),
+                        product.getPublisher().getId(),
+                        product.getPublisher().getFirstname() + " " + product.getPublisher().getLastname(),
+                        product.getPublisher().getImageUrl(),
                         product.getCreatedOn().toString(),
                         product.getUpdatedOn() != null ? product.getUpdatedOn().toString() : null,
                         product.getPrice(),

@@ -44,7 +44,7 @@ public class Product {
     private User publisher;
 
 
-    @ManyToMany(mappedBy = "likedProjects")
+    @ManyToMany(mappedBy = "likedProducts")
     @JsonIgnore
     private Set<User> likedEmployees = new HashSet<>();
 
