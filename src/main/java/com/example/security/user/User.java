@@ -68,6 +68,10 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Follow> follows = new HashSet<>();
 
+    private int numberOfFollowers;
+    private int numberOfFollowing;
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
