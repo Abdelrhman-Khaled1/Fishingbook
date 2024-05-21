@@ -59,5 +59,32 @@ public class FishService {
         // Save FishEntity along with FishDetails
         fishRepository.save(fishEntity);
     }
+    @Transactional
+    public void update(FishDto fishDto) {
+
+
+        FishEntity fishEntity1 = fishRepository.findById(fishDto.getId()).get();
+
+        fishEntity1.getFishDetails().stream().forEach(fishDetails -> detailsRepo.delete(fishDetails));//delete old details
+
+        fishEntity1.setName(fishDto.getName());
+        fishEntity1.setImageUrl(fishDto.getImageUrl());
+
+        List<FishDetails> fishDetailsList = new ArrayList<>();
+        if (fishDto.getFishDetails() != null) {
+            for (FishDetailsDto detailsDto : fishDto.getFishDetails()) {
+                FishDetails detail = new FishDetails();
+                detail.setHeader(detailsDto.getHeader());
+                detail.setContent(detailsDto.getContent());
+                detail.setFish(fishEntity1); // Set the relationship
+                fishDetailsList.add(detail);
+            }
+        }
+
+        fishEntity1.setFishDetails(fishDetailsList);
+
+        // Save FishEntity along with FishDetails
+        fishRepository.save(fishEntity1);
+    }
 
 }
