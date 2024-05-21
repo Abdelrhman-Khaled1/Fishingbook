@@ -90,4 +90,8 @@ public class FollowService {
         userService.save(follower);
         userService.save(followed);
     }
+
+    public boolean isFollowed(User follower, User followed){
+        return followRepository.findByFollowerAndFollowed(follower, followed).isPresent();
+    }
 }
