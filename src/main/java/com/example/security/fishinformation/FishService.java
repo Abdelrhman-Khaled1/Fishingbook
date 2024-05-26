@@ -87,4 +87,8 @@ public class FishService {
         fishRepository.save(fishEntity1);
     }
 
+    public void delete(Long id) {
+        FishEntity fishEntity = fishRepository.findById(id).get();
+        fishRepository.delete(fishEntity);
+    }
 }

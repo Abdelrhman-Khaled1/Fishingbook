@@ -24,6 +24,13 @@ public class FishController {
     public void update(@RequestBody FishDto fishDto) {
         fishService.update(fishDto);
     }
+
+    @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public void delete(@PathVariable Long id) {
+        fishService.delete(id);
+    }
+
     @GetMapping
     public List<FishDto> getAll(){
         return fishService.getFishes();
