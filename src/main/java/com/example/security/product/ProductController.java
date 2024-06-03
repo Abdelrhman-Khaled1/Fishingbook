@@ -96,5 +96,12 @@ public class ProductController {
         return productService.getReportedProducts();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/admin/delete/{productId}")
+    public ResponseEntity adminDeleteProduct(@PathVariable Long productId) {
+        productService.adminDeleteProduct(productId);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
 }
 

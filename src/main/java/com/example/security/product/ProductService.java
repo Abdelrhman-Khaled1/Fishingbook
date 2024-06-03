@@ -354,4 +354,14 @@ public class ProductService {
         }).collect(Collectors.toList());
     }
 
+    public boolean adminDeleteProduct(Long id){
+        Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("For id " + id));
+
+            Set<User> likedUsers = product.getLikedUsers();
+            likedUsers.stream()
+                    .forEach(user -> unAssignLikedProductFromUser(user, product));
+            productRepository.deleteById(id);
+            return true;
+    }
+
 }
