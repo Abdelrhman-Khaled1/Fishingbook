@@ -3,6 +3,7 @@ package com.example.security.product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -87,6 +88,12 @@ public class ProductController {
     public ResponseEntity reportProduct(@PathVariable Long id){
         productService.reportProduct(id);
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/reported")
+    public List<ReportedProductDto> getReportedProducts() {
+        return productService.getReportedProducts();
     }
 
 }

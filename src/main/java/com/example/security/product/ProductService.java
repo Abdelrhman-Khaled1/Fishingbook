@@ -336,4 +336,22 @@ public class ProductService {
         });
         userService.save(user);
     }
+
+    public List<ReportedProductDto> getReportedProducts() {
+        return productRepository.findAllReportedProductsOrderByNumberOfReports().stream().map(product -> {
+            return new ReportedProductDto(
+                    product.getId(),
+                    product.getTitle(),
+                    product.getContent(),
+                    product.getPublisher().getId(),
+                    product.getPublisher().getFirstname(),
+                    product.getPublisher().getImageUrl(),
+                    product.getCreatedOn().toString(),
+                    product.getPrice(),
+                    product.getImageUrl(),
+                    product.getNumberOfReports()
+            );
+        }).collect(Collectors.toList());
+    }
+
 }
