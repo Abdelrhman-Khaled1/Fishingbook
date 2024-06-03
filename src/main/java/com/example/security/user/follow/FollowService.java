@@ -94,4 +94,13 @@ public class FollowService {
     public boolean isFollowed(User follower, User followed){
         return followRepository.findByFollowerAndFollowed(follower, followed).isPresent();
     }
+
+    public void deleteAllFollowingAndFollowers(User user){
+        List<Follow> byFollower = followRepository.findByFollower(user);
+        List<Follow> byFollowed = followRepository.findByFollowed(user);
+
+
+        byFollower.stream().forEach(followRepository::delete);
+        byFollowed.stream().forEach(followRepository::delete);
+    }
 }

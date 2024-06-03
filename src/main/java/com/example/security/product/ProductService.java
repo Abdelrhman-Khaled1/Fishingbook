@@ -148,8 +148,8 @@ public class ProductService {
         Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("For id " + id));
         if (product.getPublisher().getEmail().equals(loggedInUser.getUsername())) {
 
-            Set<User> likedEmployees = product.getLikedEmployees();
-            likedEmployees.stream()
+            Set<User> likedUsers = product.getLikedUsers();
+            likedUsers.stream()
                     .forEach(user -> unAssignLikedProductFromUser(user, product));
             productRepository.deleteById(id);
         } else {
@@ -290,12 +290,50 @@ public class ProductService {
         User user = userService.findByEmail(loggedInUser.getUsername()).get();
 
         Product product = productRepository.findById(id).get();
-        Set<User> reporters = product.getReporters();
+        Set<User> reporters = product.getProduct_reports();
         if (!reporters.contains(user)) {
             reporters.add(user);
-            product.setReporters(reporters);
+            product.setProduct_reports(reporters);
             product.setNumberOfReports(product.getNumberOfReports() + 1);
             productRepository.save(product);
         }
+    }
+
+    public void deleteAllLikesThatIMadeForAllProducts(User user) {
+        List<Product> likedProducts = user.getLikedProducts();
+        likedProducts.forEach(product -> {
+            Set<User> likedUsers = product.getLikedUsers();
+            likedUsers.remove(user);
+            productRepository.save(product);
+        });
+    }
+
+    public void deleteReportsByUser(User user) {
+        Set<Product> ReportedProducts = user.getProductsToReport();
+        ReportedProducts.stream().forEach(product -> {
+            product.setProduct_reports(null);
+            productRepository.save(product);
+        });
+        user.setProductsToReport(null);
+        userService.save(user);
+    }
+
+    public void deleteAllLikesForMyProducts(User user) {
+        List<Product> publishedProducts = user.getPublishedProducts();
+        publishedProducts.stream().forEach(product -> {
+
+            Set<User> likedUsers = product.getLikedUsers();
+            likedUsers.stream().forEach(user1 -> {
+                List<Product> likedProducts = user1.getLikedProducts();
+                likedProducts.remove(product);
+                user1.setLikedProducts(likedProducts);
+                userService.save(user1);
+            });
+
+            product.setLikedUsers(null);
+            productRepository.save(product);
+
+        });
+        userService.save(user);
     }
 }

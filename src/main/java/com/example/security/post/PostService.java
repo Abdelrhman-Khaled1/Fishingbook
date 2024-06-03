@@ -24,9 +24,14 @@ public class PostService {
 
 
     public void addPost(PostDtoRequest postDtoRequest) {
+
+        UserDetails loggedInUser = authenticationService.getCurrentUser().orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+        User user = userService.findByEmail(loggedInUser.getUsername()).get();
+
         var post = Post.builder()
                 .content(postDtoRequest.getContent())
                 .imageUrl(postDtoRequest.getImageUrl())
+                .owner(user)
                 .build();
         postRepository.save(post);
     }
@@ -101,10 +106,10 @@ public class PostService {
         User user = userService.findByEmail(loggedInUser.getUsername()).get();
 
         Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException("For id " + id));
-        unAssignUserFromProductLikes(user, post);
+        unAssignUserFromPostLikes(user, post);
     }
 
-    private void unAssignUserFromProductLikes(User user, Post post) {
+    private void unAssignUserFromPostLikes(User user, Post post) {
         Set<User> userSet = null;
         userSet = post.getLikes();
         userSet.removeIf(item -> item.equals(user));
@@ -246,7 +251,37 @@ public class PostService {
 
 
 
+    public void deleteAllPostLikesForUser(User user){
+        List<Post> likedPosts = user.getLikedPosts().stream().toList();
+        likedPosts.stream().forEach(post -> unAssignUserFromPostLikes(user,post));
+        userService.save(user);
+    }
 
+
+    public void reportPost(Long id) {
+
+        UserDetails loggedInUser = authenticationService.getCurrentUser().orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+        User user = userService.findByEmail(loggedInUser.getUsername()).get();
+
+        Post post = postRepository.findById(id).get();
+        Set<User> reporters = post.getPost_reports();
+        if (!reporters.contains(user)) {
+            reporters.add(user);
+            post.setPost_reports(reporters);
+            post.setNumberOfReports(post.getNumberOfReports() + 1);
+            postRepository.save(post);
+        }
+    }
+
+    public void deleteReportsByUser(User user){
+        Set<Post> postsToReport = user.getPostsToReport();
+        postsToReport.stream().forEach(post -> {
+                    post.setPost_reports(null);
+                    postRepository.save(post);
+        });
+        user.setPostsToReport(null);
+        userService.save(user);
+    }
 
 
 

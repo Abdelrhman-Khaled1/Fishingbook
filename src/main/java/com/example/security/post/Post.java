@@ -2,6 +2,7 @@ package com.example.security.post;
 
 import com.example.security.post.comment.Comment;
 import com.example.security.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
@@ -10,6 +11,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -61,5 +63,20 @@ public class Post {
     private List<Comment> postComments;
 
     private int numberOfComments;
+
+
+    @ManyToOne
+    @JsonIgnore
+    private User owner;
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(name = "_user_report_posts",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> post_reports = new HashSet<>();
+    private int numberOfReports;
+
 
 }

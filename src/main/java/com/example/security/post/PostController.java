@@ -64,5 +64,10 @@ public class PostController {
         return postService.getPostsByUserIdWithLikedFlag(id);
     }
 
+    @PostMapping("/report/{id}")
+    public ResponseEntity reportProduct(@PathVariable Long id){
+        postService.reportPost(id);
+        return new ResponseEntity(HttpStatus.OK);
+    }
 
 }

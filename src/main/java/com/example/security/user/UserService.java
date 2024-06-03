@@ -2,6 +2,7 @@ package com.example.security.user;
 
 import com.example.security.auth.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,13 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private AuthenticationService authenticationService;
+
+    private final UserDeleteService userDeleteService;
+
+    @Autowired
+    public UserService(@Lazy UserDeleteService userDeleteService) {
+        this.userDeleteService = userDeleteService;
+    }
 
     public Optional<User> findByEmail(String username) {
         return userRepository.findByEmail(username);
@@ -69,5 +77,17 @@ public class UserService {
         UserDetails loggedInUser = authenticationService.getCurrentUser().orElseThrow(() -> new IllegalArgumentException("User Not Found"));
         User user = findByEmail(loggedInUser.getUsername()).get();
         return mapUserToUserDtoResponse(user);
+    }
+
+    public void deleteUserAccount(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    public void deleteMyAccount() {
+        UserDetails loggedInUser = authenticationService.getCurrentUser().orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+        User user = userRepository.findByEmail(loggedInUser.getUsername()).get();
+        userDeleteService.unAssignDataForUser(user);
+        userRepository.delete(user);
+
     }
 }

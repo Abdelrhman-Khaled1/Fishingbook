@@ -46,7 +46,7 @@ public class Product {
 
     @ManyToMany(mappedBy = "likedProducts")
     @JsonIgnore
-    private Set<User> likedEmployees = new HashSet<>();
+    private Set<User> likedUsers = new HashSet<>();
 
 
     @JsonIgnore
@@ -55,7 +55,7 @@ public class Product {
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private Set<User> reporters = new HashSet<>();
+    private Set<User> product_reports = new HashSet<>();
 
     @JsonIgnore
     private int numberOfReports;

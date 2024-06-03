@@ -3,6 +3,7 @@ package com.example.security.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,4 +37,15 @@ public class UserController {
         return new ResponseEntity<>(userService.findUserById(id),HttpStatus.OK);
     }
 
+    @DeleteMapping("/delete/account")
+    public ResponseEntity deleteMyAccount(){
+        userService.deleteMyAccount();
+        return new ResponseEntity(HttpStatus.OK);
+    }
+    @DeleteMapping("/admin/delete/account/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity deleteUserAccount(@PathVariable Long id){
+        userService.deleteUserAccount(id);
+        return new ResponseEntity(HttpStatus.OK);
+    }
 }

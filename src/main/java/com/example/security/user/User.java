@@ -41,10 +41,13 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "publisher")
+    @OneToMany(mappedBy = "publisher",cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Product> publishedProducts;
 
+    @OneToMany(mappedBy = "owner",cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Post> publishedPosts;
 
 
     @ManyToMany
@@ -54,8 +57,11 @@ public class User implements UserDetails {
     )
     private List<Product> likedProducts = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "reporters")
+    @ManyToMany(mappedBy = "product_reports")
     private Set<Product> productsToReport = new HashSet<>();
+
+    @ManyToMany(mappedBy = "post_reports")
+    private Set<Post> postsToReport = new HashSet<>();
 
     @ManyToMany(mappedBy = "likes")
     @JsonIgnore
@@ -65,7 +71,7 @@ public class User implements UserDetails {
     private List<Comment> userComments;
 
 
-    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL)
     private Set<Follow> follows = new HashSet<>();
 
     private int numberOfFollowers;
