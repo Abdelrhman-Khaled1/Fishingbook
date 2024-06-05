@@ -4,6 +4,7 @@ import com.example.security.user.UserSummary;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -69,5 +70,26 @@ public class PostController {
         postService.reportPost(id);
         return new ResponseEntity(HttpStatus.OK);
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/reported")
+    public List<ReportedPostDto> getReportedPosts() {
+        return postService.getReportedPosts();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/admin/delete/{postId}")
+    public ResponseEntity adminDeletePost(@PathVariable Long postId) {
+        postService.adminDeletePost(postId);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/admin/reports/delete/{postId}")
+    public ResponseEntity adminDeleteAllReportsForPost(@PathVariable Long postId){
+        postService.deleteAllReportsForPost(postId);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
 
 }

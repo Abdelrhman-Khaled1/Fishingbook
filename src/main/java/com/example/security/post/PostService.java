@@ -9,9 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -137,7 +135,7 @@ public class PostService {
                         post.getContent(),
                         post.getImageUrl(),
                         user.getId(),
-                        user.getFirstname()+" "+user.getLastname(),
+                        user.getFirstname() + " " + user.getLastname(),
                         user.getImageUrl(),
                         post.getCreateDate().toString(),
                         post.getNumberOfLikes(),
@@ -145,6 +143,7 @@ public class PostService {
                 )
         ).collect(Collectors.toList());
     }
+
     public List<PostDtoResponse> getPostsByUserId(Long id) {
         User user = userService.findById(id);
         List<Post> posts = postRepository.findByCreatedBy(id);
@@ -154,7 +153,7 @@ public class PostService {
                         post.getContent(),
                         post.getImageUrl(),
                         user.getId(),
-                        user.getFirstname()+" "+user.getLastname(),
+                        user.getFirstname() + " " + user.getLastname(),
                         user.getImageUrl(),
                         post.getCreateDate().toString(),
                         post.getNumberOfLikes(),
@@ -163,7 +162,7 @@ public class PostService {
         ).collect(Collectors.toList());
     }
 
-    public boolean isUserLikesPost(User user,Post post){
+    public boolean isUserLikesPost(User user, Post post) {
         return post.getLikes().contains(user);
     }
 
@@ -228,7 +227,6 @@ public class PostService {
         List<Post> posts = postRepository.findByCreatedBy(id);
 
 
-
         return posts.stream().map(
                 post -> {
                     boolean isUserLikesPost = isUserLikesPost(user, post);
@@ -250,10 +248,9 @@ public class PostService {
     }
 
 
-
-    public void deleteAllPostLikesForUser(User user){
+    public void deleteAllPostLikesForUser(User user) {
         List<Post> likedPosts = user.getLikedPosts().stream().toList();
-        likedPosts.stream().forEach(post -> unAssignUserFromPostLikes(user,post));
+        likedPosts.stream().forEach(post -> unAssignUserFromPostLikes(user, post));
         userService.save(user);
     }
 
@@ -273,16 +270,60 @@ public class PostService {
         }
     }
 
-    public void deleteReportsByUser(User user){
+    public void deleteReportsByUser(User user) {
         Set<Post> postsToReport = user.getPostsToReport();
         postsToReport.stream().forEach(post -> {
-                    post.setPost_reports(null);
-                    postRepository.save(post);
+            post.setPost_reports(null);
+            postRepository.save(post);
         });
         user.setPostsToReport(null);
         userService.save(user);
     }
 
+
+    public boolean adminDeletePost(Long id) {
+        Post post = postRepository.findById(id).get();
+
+        Set<User> likedUsers = post.getLikes();
+        likedUsers.stream()
+                .forEach(user -> unAssignUserFromPostLikes(user, post));
+        postRepository.deleteById(id);
+        return true;
+    }
+
+    public List<ReportedPostDto> getReportedPosts() {
+        return postRepository.findAllReportedPostsOrderByNumberOfReports().stream().map(
+                post -> new ReportedPostDto(
+                        post.getId(),
+                        post.getContent(),
+                        post.getImageUrl(),
+                        post.getOwner().getId(),
+                        post.getOwner().getFirstname(),
+                        post.getOwner().getImageUrl(),
+                        post.getCreateDate().toString(),
+                        post.getNumberOfLikes(),
+                        post.getNumberOfComments(),
+                        post.getNumberOfReports()
+                )).collect(Collectors.toList());
+    }
+
+    public boolean deleteAllReportsForPost(Long id) {
+        Optional<Post> optionalPost = postRepository.findById(id);
+        if (!optionalPost.isPresent()) {
+            return false; // Or throw an exception, depending on your requirement
+        }
+
+        Post post = optionalPost.get();
+
+        // Clear the post reports set and update the number of reports
+        post.setPost_reports(new HashSet<>());
+        post.setNumberOfReports(0);
+
+        // Save the updated post
+        postRepository.save(post);
+
+        return true;
+    }
 
 
 
