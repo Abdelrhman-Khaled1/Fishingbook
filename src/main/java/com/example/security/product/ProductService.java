@@ -8,9 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -116,7 +114,7 @@ public class ProductService {
         return productsByUserId.stream().map(this::mapFromProductToDto).collect(Collectors.toList());
     }
 
-    private List<Product> getProductsByUserId(Long id){
+    private List<Product> getProductsByUserId(Long id) {
         return productRepository.findByPublisherId(id);
     }
 
@@ -354,14 +352,31 @@ public class ProductService {
         }).collect(Collectors.toList());
     }
 
-    public boolean adminDeleteProduct(Long id){
+    public boolean adminDeleteProduct(Long id) {
         Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("For id " + id));
 
-            Set<User> likedUsers = product.getLikedUsers();
-            likedUsers.stream()
-                    .forEach(user -> unAssignLikedProductFromUser(user, product));
-            productRepository.deleteById(id);
-            return true;
+        Set<User> likedUsers = product.getLikedUsers();
+        likedUsers.stream()
+                .forEach(user -> unAssignLikedProductFromUser(user, product));
+        productRepository.deleteById(id);
+        return true;
+    }
+    public boolean deleteAllReportsForProduct(Long id) {
+        Optional<Product> optionalProduct = productRepository.findById(id);
+        if (!optionalProduct.isPresent()) {
+            return false; // Or throw an exception, depending on your requirement
+        }
+
+        Product product = optionalProduct.get();
+
+        // Clear the product reports set and update the number of reports
+        product.setProduct_reports(new HashSet<>());
+        product.setNumberOfReports(0);
+
+        // Save the updated product
+        productRepository.save(product);
+
+        return true;
     }
 
 }
