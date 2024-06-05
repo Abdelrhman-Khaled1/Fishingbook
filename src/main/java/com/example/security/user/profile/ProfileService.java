@@ -29,7 +29,7 @@ public class ProfileService {
                 user.getPhone(),
                 user.getAddress(),
                 user.getBio(),
-                user.getBirthdate().toString(),
+                user.getBirthdate() != null ? user.getBirthdate().toString() : null,
                 user.getNumberOfFollowers(),
                 user.getNumberOfFollowing()
         );
