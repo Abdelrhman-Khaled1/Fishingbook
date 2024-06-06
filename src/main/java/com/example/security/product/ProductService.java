@@ -109,9 +109,39 @@ public class ProductService {
 
     }
 
-    public List<ProductDtoResponse> getProductByUserId(Long id) {
+    public List<ProductDtoLiked> getProductByUserId(Long id) {
         List<Product> productsByUserId = productRepository.findByPublisherId(id);
-        return productsByUserId.stream().map(this::mapFromProductToDto).collect(Collectors.toList());
+
+        UserDetails loggedInUser = authenticationService.getCurrentUser().orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+        User user = userService.findByEmail(loggedInUser.getUsername()).get();
+
+        List<ProductDtoLiked> productDtoResponses = productsByUserId.stream()
+                .map(product -> {
+                    User publisher = product.getPublisher();
+                    String publisherName = publisher.getFirstname() + " " + publisher.getLastname();
+                    String publisherImage = publisher.getImageUrl();
+
+                    boolean liked = product.getLikedUsers().contains(user);
+
+                    return new ProductDtoLiked(
+                            product.getId(),
+                            product.getTitle(),
+                            product.getContent(),
+                            product.getCategory().getId(),
+                            publisher.getId(),
+                            publisherName,
+                            publisherImage,
+                            product.getCreatedOn().toString(),
+                            product.getUpdatedOn() != null ? product.getUpdatedOn().toString() : null,
+                            product.getPrice(),
+                            product.getImageUrl(),
+                            liked
+                    );
+                })
+                .collect(Collectors.toList());
+
+        Collections.reverse(productDtoResponses);
+        return productDtoResponses;
     }
 
     private List<Product> getProductsByUserId(Long id) {
