@@ -193,6 +193,7 @@ public class PostService {
                     )
             );
         }
+        Collections.reverse(flaggedPosts);
         return flaggedPosts;
     }
 
@@ -202,7 +203,7 @@ public class PostService {
 
         List<Post> posts = postRepository.findByCreatedBy(user.getId());
 
-        return posts.stream().map(
+        List<PostDtoResponse> postsDto = posts.stream().map(
                 post -> {
                     boolean isUserLikesPost = isUserLikesPost(user, post);
                     PostDtoResponse postDtoResponse = new PostDtoResponse(
@@ -220,6 +221,8 @@ public class PostService {
                     return postDtoResponse;
                 }
         ).collect(Collectors.toList());
+        Collections.reverse(postsDto);
+        return postsDto;
     }
 
     public List<PostDtoResponse> getPostsByUserIdWithLikedFlag(Long id) {
@@ -227,7 +230,7 @@ public class PostService {
         List<Post> posts = postRepository.findByCreatedBy(id);
 
 
-        return posts.stream().map(
+        List<PostDtoResponse> postsDto = posts.stream().map(
                 post -> {
                     boolean isUserLikesPost = isUserLikesPost(user, post);
                     PostDtoResponse postDtoResponse = new PostDtoResponse(
@@ -245,6 +248,8 @@ public class PostService {
                     return postDtoResponse;
                 }
         ).collect(Collectors.toList());
+        Collections.reverse(postsDto);
+        return postsDto;
     }
 
 

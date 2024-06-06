@@ -155,7 +155,7 @@ public class ProductService {
 
         List<Product> productsByUserId = getProductsByUserId(userId);
 
-        return productsByUserId.stream()
+        List<ProductDtoResponseIOwn> products = productsByUserId.stream()
                 .map(product -> ProductDtoResponseIOwn.builder()
                         .id(product.getId())
                         .title(product.getTitle())
@@ -166,8 +166,9 @@ public class ProductService {
                         .createdOn(product.getCreatedOn().toString())
                         .updatedOn(product.getUpdatedOn() != null ? product.getUpdatedOn().toString() : null)
                         .build()
-                )
-                .collect(Collectors.toList());
+                ).collect(Collectors.toList());
+        Collections.reverse(products);
+        return products;
     }
 
     public void deleteProduct(Long id) {
@@ -232,7 +233,7 @@ public class ProductService {
     public List<ProductDtoResponseWithUserData> getLikedProducts() {
         UserDetails loggedInUser = authenticationService.getCurrentUser().orElseThrow(() -> new IllegalArgumentException("User Not Found"));
         User user = userService.findByEmail(loggedInUser.getUsername()).get();
-        return user.getLikedProducts().stream()
+        List<ProductDtoResponseWithUserData> products = user.getLikedProducts().stream()
                 .map(product -> new ProductDtoResponseWithUserData(
                         product.getId(),
                         product.getTitle(),
@@ -245,6 +246,8 @@ public class ProductService {
                         product.getPrice(),
                         product.getImageUrl()
                 )).collect(Collectors.toList());
+        Collections.reverse(products);
+        return products;
     }
 
     //    public List<ProductDtoLiked> allProductsWithFlagLikedOnes() {
@@ -309,6 +312,7 @@ public class ProductService {
                     productDtoLiked.setLiked(isLiked);
                     productsWithLikedFlag.add(productDtoLiked);
                 });
+        Collections.reverse(productsWithLikedFlag);
         return productsWithLikedFlag;
     }
 
@@ -391,6 +395,7 @@ public class ProductService {
         productRepository.deleteById(id);
         return true;
     }
+
     public boolean deleteAllReportsForProduct(Long id) {
         Optional<Product> optionalProduct = productRepository.findById(id);
         if (!optionalProduct.isPresent()) {
