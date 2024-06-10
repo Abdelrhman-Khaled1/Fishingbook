@@ -177,15 +177,16 @@ public class PostService {
 
         for (int i = 0; i < posts.size(); i++) {
             Post post = posts.get(i);
+            User owner = post.getOwner();
             boolean isUserLikesPost = isUserLikesPost(user, post);
             flaggedPosts.add(
                     new PostDtoResponse(
                             post.getId(),
                             post.getContent(),
                             post.getImageUrl(),
-                            user.getId(),
-                            user.getFirstname() + " " + user.getLastname(),
-                            user.getImageUrl(),
+                            owner.getId(),
+                            owner.getFirstname() + " " + owner.getLastname(),
+                            owner.getImageUrl(),
                             post.getCreateDate().toString(),
                             post.getNumberOfLikes(),
                             post.getNumberOfComments(),
