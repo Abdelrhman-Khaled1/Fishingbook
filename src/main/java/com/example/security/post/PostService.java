@@ -234,16 +234,18 @@ public class PostService {
         List<Post> posts = postRepository.findByCreatedBy(id);
 
 
+
         List<PostDtoResponse> postsDto = posts.stream().map(
                 post -> {
                     boolean isUserLikesPost = isUserLikesPost(user, post);
+                    User user1 = post.getOwner();
                     PostDtoResponse postDtoResponse = new PostDtoResponse(
                             post.getId(),
                             post.getContent(),
                             post.getImageUrl(),
-                            user.getId(),
-                            user.getFirstname() + " " + user.getLastname(),
-                            user.getImageUrl(),
+                            user1.getId(),
+                            user1.getFirstname() + " " + user1.getLastname(),
+                            user1.getImageUrl(),
                             post.getCreateDate().toString(),
                             post.getNumberOfLikes(),
                             post.getNumberOfComments(),
