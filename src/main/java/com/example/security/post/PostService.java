@@ -227,7 +227,10 @@ public class PostService {
     }
 
     public List<PostDtoResponse> getPostsByUserIdWithLikedFlag(Long id) {
-        User user = userService.findById(id);
+
+        UserDetails loggedInUser = authenticationService.getCurrentUser().orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+        User user = userService.findByEmail(loggedInUser.getUsername()).get();
+
         List<Post> posts = postRepository.findByCreatedBy(id);
 
 
